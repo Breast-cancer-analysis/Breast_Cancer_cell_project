@@ -1,7 +1,7 @@
 # get files
 import matplotlib.pyplot as plt
 import pickle
-from FOV_cell import get_all_filenames
+from functions.FOV_cell import get_all_filenames
 import numpy as np
 
 
