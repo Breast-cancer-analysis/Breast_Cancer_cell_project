@@ -18,15 +18,21 @@ class FOV:
             all_cells.append(cell(self.df.iloc[i]))
 
         return all_cells
+    
+    def get_distance_matrix(self):
+        # for each FOV, get a distane matrix
+        return None
 
 
 class cell:
-    def __init__(self, data):
+    def __init__(self, data, corrlation_method):
         self.time_series = data.iloc[3:].values.tolist()
         self.num = self.get_cell_number(data)
         self.std = np.std(self.time_series)
         self.time_length = len(self.time_series)
         self.no_event = False
+
+
 
     def get_cell_number(self, data):
         # the actually index(or number) of a cell is witten in 'cell' columne
@@ -59,6 +65,8 @@ class cell:
             self.no_event = True
 
         return spike_train, bins
+    
+    def get_spike_rastors(self,)
 
 
 def get_all_filenames(directory_path):

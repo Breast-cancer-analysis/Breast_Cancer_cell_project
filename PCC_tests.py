@@ -12,10 +12,10 @@ from statsmodels.stats.multitest import multipletests
 from scipy.stats import ttest_ind
 
 
-take_mean = True # if we are going to take mean for each FOV
+take_mean = False # if we are going to take mean for each FOV
 
 group = [231, 453, 474, 51, 159, 10, 47, 468]
-bin_width = [1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90,100]
+bin_width = [10]
 variable = {}
 last_result = pd.DataFrame()
 
