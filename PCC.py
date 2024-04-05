@@ -12,11 +12,12 @@ bin_sizes = log_space_numbers.tolist()
 print(bin_sizes)
 
 shuffle_mode = False
+save_mode = True
 
 temp_mean_list = []
 mean_list_bin = []
 path_name = '/Users/ruihongyu/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year_3/Y3_project/result/'
-cell_line = ['10_none']
+cell_line = ['474']
 
 
 # cell_line = [231] # used to test the if the result is the same as Foust do
@@ -27,6 +28,12 @@ for i in cell_line:
         # Combine the folder name with the desired path
         folder_path = os.path.join(path_name, folder_name)
         # Use os.makedirs() to create the folder and any necessary parent directories
+        os.makedirs(folder_path)
+
+    if save_mode == True:
+        # creat a folder to store csv file about pccs
+        folder_name = [str(i) + '_saved_csv']
+        folder_path = os.path.join(path_name, folder_name)
         os.makedirs(folder_path)
 
     csv_list = get_all_filenames(
@@ -40,6 +47,9 @@ for i in cell_line:
             folder_path = os.path.join(path_name+str(i), folder_name)
             # Use os.makedirs() to create the folder and any necessary parent directories
             os.makedirs(folder_path)
+
+        if save_mode == True:
+            # only 
 
         for j in csv_list:
             # iterate each file(each FOV)
@@ -60,8 +70,11 @@ for i in cell_line:
                 elif z.no_event == True:
                     view.cells_no_event.append(z)
 
+            print(np.array(all_spike).shape[0])
+            print(view.num_of_cells)
             correlation_list = corrf.calculate_pairwise_corrs(
                 np.array(all_spike))
+            print()
             # print(correlation_list)
 
             if len(correlation_list) != 0:
@@ -76,6 +89,7 @@ for i in cell_line:
                 # saving each PCC for each pairs for this FOV, bin_width and cell lines
                 with open(path_name+str(i)+'/bin_width_'+str(d)+'/' + file_name, 'wb') as file:
                     pickle.dump(correlation_list, file)
+            elif 
         mean_list_bin.append(sum(temp_mean_list)/len(temp_mean_list))
 
         temp_mean_list = []

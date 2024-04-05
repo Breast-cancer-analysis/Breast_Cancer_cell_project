@@ -59,11 +59,6 @@ def calculate_pairwise_corrs(binned_spikes):
         result[idx0] = np.abs(
             np.corrcoef(binned_spikes[idx1, :], binned_spikes[idx2, :])[0, 1]
         )
-        if result[idx0] > 0.98 and False:
-            plt.show()
-            plt.plot(binned_spikes[idx1, :])
-            plt.plot(binned_spikes[idx2, :] + 1)
-            plt.show()
 
     return result
 

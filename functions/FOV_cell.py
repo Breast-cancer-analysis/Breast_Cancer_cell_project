@@ -8,7 +8,7 @@ class FOV:
         self.name = file_path.split('/')[-1][:-4]
         self.df = pd.read_csv(file_path)
         self.num_of_cells = len(self.df)
-        self.cells = self.get_all_cells()
+        self.cells = self.get_all_cells() #all cell class in this list
         self.cells_no_event = []
 
     def get_all_cells(self):
@@ -25,7 +25,7 @@ class FOV:
 
 
 class cell:
-    def __init__(self, data, corrlation_method):
+    def __init__(self, data):
         self.time_series = data.iloc[3:].values.tolist()
         self.num = self.get_cell_number(data)
         self.std = np.std(self.time_series)
@@ -42,13 +42,20 @@ class cell:
         # bin width are the real time??
         samp_t = 0.2  # sampling time interval
 
-        # time, like the real time
+        # time, like the real time, in unit of second
         time = [i * samp_t for i in range(len(self.time_series))]
 
-        # time-bin
+        # time-bin, all value in this list is a 'real time', meaning having a unit of second
         bins = [i * bin_width for i in range(int(max(time) / bin_width) + 1)]
+        bins.append(max(time))
+        
+        # ## for testing the function: 
+        # print("lastest time in 'bins'",bins[-1])
+        # print("lastest time in 'time'",max(time))
+        # print("last number in 'time'",time[-1])
+        # print('length of bin:', len(bins))
 
-        spike_train = [0 for _ in bins]
+        spike_train = [0 for _ in range(len(bins) - 1)]
 
         threshold = 1 - n_std * self.std
 
@@ -57,16 +64,15 @@ class cell:
             bin_start = bins[i]
             bin_end = bins[i + 1]
 
-            # 如果当前时间区间内有信号值低于阈值，则在脉冲列中标记为 1
             if any(abs(self.time_series[j]) < threshold for j, t in enumerate(time) if bin_start <= t < bin_end):
                 spike_train[i] = 1
 
-        if spike_train == [0 for _ in bins]:
+        if spike_train == [0 for _ in range(len(bins) - 1)]:
             self.no_event = True
 
+        print('length of spikes:',len(spike_train))
         return spike_train, bins
-    
-    def get_spike_rastors(self,)
+
 
 
 def get_all_filenames(directory_path):

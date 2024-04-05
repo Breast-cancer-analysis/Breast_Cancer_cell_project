@@ -10,34 +10,37 @@ from sklearn.utils import resample
 import scikit_posthocs as sp
 from statsmodels.stats.multitest import multipletests
 from scipy.stats import ttest_ind
+import random
+from statsmodels.nonparametric.kde import KDEUnivariate
 
+take_mean = True # if we are going to take mean for each FOV
 
-take_mean = False # if we are going to take mean for each FOV
-
-group = [231, 453, 474, 51, 159, 10, 47, 468]
+groups = [231,'wm','MCF10A_TGFB']
 bin_width = [10]
 variable = {}
 last_result = pd.DataFrame()
 
 for z in bin_width:
-    for i in group:
-        all_file = get_all_filenames('../result/'+str(i)+'/bin_width_'+str(z)+'/')
+    for i in groups:
+        all_file = get_all_filenames('../result/'+str(i)+'/bin_width_'+str(z)+'.0'+'/')
         temp = []
-        for j in all_file:
+        for j in all_file: # all FOV
             with open(j,'rb') as file:
                 data = pickle.load(file)
-            data = data.tolist()
+            data = data.tolist() # load each FOV's PCC
+
             if take_mean == True and len(data) != 0:
                 temp.append(data)
             elif take_mean == False and len != 0:
                 temp.append(data)
             elif take_mean == True and len(data) == 0:
                 continue
-
         if take_mean == False:
             variable[str(i)] = [item for sublist in temp for item in sublist]
         else:
             variable[str(i)] = [item for sublist in temp for item in sublist]
+    
+    print(len(variable))
 
 
 
@@ -81,8 +84,8 @@ for z in bin_width:
 
     elif take_mean == True:
         #take a mean, so do ANOVA test
-        updated_dict = {k: resample(v, replace=True, n_samples=len(data), random_state=1) for k, v in variable.items()}
-        df = pd.DataFrame([(key, var) for key, vals in variable.items() for var in vals],
+        updated_dict = {k: [sum(random.choices(v, k=3)) / 3 for _ in range(len(v))] for k, v in variable.items()}
+        df = pd.DataFrame([(key, var) for key, vals in updated_dict.items() for var in vals],
                     columns=['Group', 'Value'])
         
 
@@ -105,17 +108,20 @@ for z in bin_width:
         comparisons = [(groups[i], groups[j]) for i in range(len(groups)) for j in range(i+1, len(groups))]
 
         p_values = []
+        stats = []
         for group1, group2 in comparisons:
             data1 = df[df['Group'] == group1]['Value']
             data2 = df[df['Group'] == group2]['Value']
             stat, p = ttest_ind(data1, data2)
             p_values.append(p)
+            stats.append(stat)
 
 
         reject, pvals_corrected, _, alpha_corrected = multipletests(p_values, alpha=0.05, method='bonferroni')
 
         print(comparisons)
         print(len(comparisons))
+        print(stats)
         print('Reject null hypothesis:', reject)
         print('Corrected p-values:', pvals_corrected)
 
