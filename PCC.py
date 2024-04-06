@@ -37,16 +37,6 @@ for i in cell_line:
         '/Users/ruihongyu/Library/CloudStorage/OneDrive-ImperialCollegeLondon/Year_3/Y3_project/'+str(i))
     print(csv_list)
 
-    if save_mode == True:
-        # creat a folder to store csv file about pccs
-        folder_name = str(i)
-        folder_path = os.path.join(path_name_2, folder_name)
-        os.makedirs(folder_path)
-        # creata a pandas dataframe to store the PCC pairs value and save it as a csv later
-        # per csv file per FOV
-        FOV_names =  [i.split('/')[-1][:-4] for i in csv_list]
-        csv_dataframes = {name: pd.DataFrame(columns=['cell1','cell2','PCC_1s','PCC_10s','PCC_100s']) for name in FOV_names}
-
     for d in bin_sizes:
         if shuffle_mode == False and save_mode == False:
             # only create folder to store detailed PCC information when we are not in shuffle mode

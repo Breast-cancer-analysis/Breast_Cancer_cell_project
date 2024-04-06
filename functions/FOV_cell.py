@@ -38,7 +38,8 @@ class Cellline:
         # this is a function to calculat the PCC for all FOVs we get in this cell line
         for i in self.FOVs:
             i.calculate_PCC()
-    
+
+
 class FOV:
     def __init__(self, file_path, cell_line):
         self.cell_line = cell_line
@@ -82,12 +83,10 @@ class FOV:
             row_in_tale = 0
             # iterate all the pairs obeject
             for j in self.pairs_objects:
-                self.table.iloc[row_in_tale, column_in_table] = np.abs(
-                np.corrcoef(j[0].spike_train, j[1].spike_train)[0, 1]
-                )
+                self.table.iloc[row_in_tale, column_in_table] = np.corrcoef(j[0].spike_train, j[1].spike_train)[0, 1]
                 row_in_tale += 1
             column_in_table += 1
-                
+               
 
 class cell:
     def __init__(self, data, FOV):
