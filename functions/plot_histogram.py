@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_histograms(data_dict, bin_size=None, x_label='Value', y_label='Frequency', title='Histogram of Groups'):
+def plot_histograms(data_dict, bin_size=None, x_label='Value', y_label='Density', title=None):
     """
     Plot histograms for multiple groups stored in a dictionary.
     
@@ -12,16 +12,16 @@ def plot_histograms(data_dict, bin_size=None, x_label='Value', y_label='Frequenc
     :param title: Plot title
     """
     # Create figure and axis
-    plt.figure()
+    plt.figure(figsize=(6, 6))
     
     # Determine bin size if not provided
     if bin_size is None:
         # Set the bin size to be the max range of the datasets divided by 30
         all_data = np.concatenate(list(data_dict.values()))
-        bin_size = (max(all_data) - min(all_data)) / 30
+        bin_size = (max(all_data) - min(all_data)) / 100
     
     # Calculate the bins
-    bins = np.arange(min(all_data), max(all_data) + bin_size, bin_size)
+    bins = np.arange(min(all_data), max(all_data), bin_size)
     
     # Plot each histogram
     for label, data in data_dict.items():

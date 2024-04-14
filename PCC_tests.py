@@ -11,12 +11,12 @@ import scikit_posthocs as sp
 from statsmodels.stats.multitest import multipletests
 from scipy.stats import ttest_ind
 import random
-from statsmodels.nonparametric.kde import KDEUnivariate
+from functions.FOV_cell import plot_kde_from_dict
 
 take_mean = True # if we are going to take mean for each FOV
 
-groups = [231,'wm','MCF10A_TGFB']
-bin_width = [10]
+groups = [231,'wm','MCF10A_TGFB','468', 'MCF10A', 'SUM159', 'T47D', 'BT474', 'Cal51' ,'453']
+bin_width = [1]
 variable = {}
 last_result = pd.DataFrame()
 
@@ -46,7 +46,7 @@ for z in bin_width:
 
     if take_mean == False:
         #did not take a mean, so do KW test, first
-        stat, p = kruskal(variable['231'], variable['453'] ,variable['474'], variable['51'], variable['159'],variable['10'],variable['47'],variable['468'])
+        stat, p = kruskal(variable['231'],variable['wm'], variable['MCF10A_TGFB'], variable['468'])
         print('Kruskal-Wallis H statistic:', stat)
         print('p-value:', p)
         alpha = 0.05  
@@ -92,7 +92,7 @@ for z in bin_width:
         # ols model？？
         model = ols('Value ~ C(Group)', data=df).fit()
 
-        anova_results = sm.stats.anova_lm(model, typ=1)
+        anova_results = sm.stats.anova_lm(model, typ=2)
 
         print(anova_results)
 
@@ -119,12 +119,15 @@ for z in bin_width:
 
         reject, pvals_corrected, _, alpha_corrected = multipletests(p_values, alpha=0.05, method='bonferroni')
 
-        print(comparisons)
-        print(len(comparisons))
-        print(stats)
-        print('Reject null hypothesis:', reject)
+        for z in range(len(comparisons)):
+            print(comparisons[z])
+            print(stats[z])
+            print('Reject null hypothesis:', reject[z])
+            print('\n')
+
         print('Corrected p-values:', pvals_corrected)
 
         print('\n \n')
 
     plot_histograms(variable)
+    plot_kde_from_dict(variable)

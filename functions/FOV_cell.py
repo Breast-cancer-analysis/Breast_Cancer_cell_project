@@ -2,6 +2,9 @@ import os
 import pandas as pd
 import numpy as np
 import itertools
+from scipy.stats import gaussian_kde
+import numpy as np
+import matplotlib.pyplot as plt
 
 class Cellline:
     def __init__(self, cell_folder, time_bins):
@@ -146,3 +149,23 @@ def get_all_filenames(directory_path):
         for file in files:
             filenames.append(os.path.join(root, file))
     return filenames
+
+def plot_kde_from_dict(data_dict, title = None, xlim = [0,0.5]):
+    """
+    参数:
+        data_dict (dict): 一个字典，其中键是名称，值是数据列表。
+    """
+    plt.figure(figsize=(6, 6))  # 创建一个图形，设置大小
+    
+    # 为字典中的每个数据集绘制核密度估计曲线
+    for name, data in data_dict.items():
+        kde = gaussian_kde(data)  # 对每组数据进行核密度估计
+        x = np.linspace(min(data), max(data), 1000)  # 生成x轴的值，覆盖数据的范围
+        plt.plot(x, kde(x), label=name)  # 绘制核密度估计曲线，并添加图例
+    
+    plt.title(title)
+    plt.legend()
+    plt.xlabel('Value')
+    plt.ylabel('Density')
+    plt.xlim(xlim)
+    plt.show()
